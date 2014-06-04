@@ -1,4 +1,4 @@
-char mode = "t"; //"t" as in Teleop
+int blinkSpeed = 3000;
 
 void setup(){
 
@@ -12,17 +12,10 @@ void setup(){
 void loop(){
 
   int NXTsignal = digitalRead(2);
-  int blinkSpeed = 2000;
-  
-  //Changes game mode to end game when NXT sends signal
-  if(NXTsignal == HIGH){
-    mode = "e"; //"e" as in End Game
-    
-  }
-  
+
   //In teleop mode, LEDs are constantly purple
-  if(mode == "t"){
-    digitalWrite(3,HIGH);
+  if(NXTsignal == LOW){
+    digitalWrite(3,HIGH); //LEDs are purple
     digitalWrite(4,LOW);
     digitalWrite(5,HIGH);
   }
@@ -30,6 +23,7 @@ void loop(){
   else{
     
     //Blinks the LEDs at an increacing pace when End Game starts
+
     digitalWrite(3,HIGH);
     digitalWrite(4,LOW);
     digitalWrite(5,HIGH);
@@ -42,7 +36,7 @@ void loop(){
     
     delay(blinkSpeed);
     
-    blinkSpeed = blinkSpeed * .75 //Shortens then next blink by 3/4
+    blinkSpeed = blinkSpeed * .8; //Shortens then next blink by 3/4
     
   }
 }
