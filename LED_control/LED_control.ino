@@ -2,6 +2,7 @@ int blinkSpeed = 3000;
 int fadeAmount = 5;
 int fadeBrightness = 0;
 char* modeList[] = {"solid","fade","colorCycle"};
+int modeIndex = 0;
 
 void setup(){
   
@@ -19,7 +20,6 @@ void loop(){
 
   int NXTsignal = digitalRead(2);
   int modeChange = digitalRead(3);
-  int modeIndex = 0;
   String mode = modeList[modeIndex];
   
   if(modeChange == HIGH){
@@ -29,8 +29,12 @@ void loop(){
     *pressed, the mode index increments to
     *change to the next mode
     ***/
-    modeIndex = modeIndex++;
-    delay(250);
+    if (modeIndex > 4){
+      modeIndex = 0;
+    }else{
+      modeIndex = modeIndex++;
+      delay(250);
+    }
   }
   
   if(mode == "solid"){
