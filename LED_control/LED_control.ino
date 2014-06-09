@@ -24,6 +24,7 @@ int bluePin = 11;
 int loopTime;
 int lap;
 
+
 void setup(){
   
   Serial.begin(9600);
@@ -157,10 +158,13 @@ void colorFade(){
   if(colorOut < 3){
   
     int colorIn = colorOut == 2 ? 0 : colorOut + 1;
-  
-    if(i < 255){
-      rgbFade[colorOut]--;
-      rgbFade[colorIn]++;
+    
+    //variable i is set to 255/increment to RGB
+    if(i < 51){
+      
+      //Increments 5 up and down each loop
+      rgbFade[colorOut] -= 5;
+      rgbFade[colorIn] += 5;
     
       //Write RGB values
       analogWrite(redPin, rgbFade[0]);
