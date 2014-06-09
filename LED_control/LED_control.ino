@@ -1,15 +1,28 @@
-//initializes all variables for later loops
+//Variables for End Game mode
 int blinkSpeed = 3000;
+
+//Variables for Purple Fade mode
 int fadeAmount = 5;
 int fadeBrightness = 0;
-char* modeList[] = {"solid","fade","colorCycle"};
+
+//Variables for Mode changing
+String modeList[] = {"solid","fade","colorFade"};
 int modeIndex = 0;
+String mode;
+
+//Variables for Color Fade mode
 int rgbFade[3];
+int colorOut = 0;
+int i = 0;
 
 //Initializes pin numbers
 int redPin = 9;
 int greenPin = 10;
 int bluePin = 11;
+
+//Timing Variables
+int loopTime;
+int lap;
 
 void setup(){
   
@@ -22,6 +35,11 @@ void setup(){
   pinMode(greenPin,OUTPUT); //Green
   pinMode(bluePin,OUTPUT); //Blue
   
+  //Initializes at Red
+  rgbFade[0] = 255;
+  rgbFade[1] = 0;
+  rgbFade[2] = 0;
+    
   Serial.println("The program has started");
   
 }
@@ -31,21 +49,22 @@ void loop(){
   //refreshes all inputs
   int NXTsignal = digitalRead(2);
   int modeChange = digitalRead(3);
-  String mode = modeList[modeIndex];
+  mode = modeList[modeIndex];
+  lap = millis();
   
   if(modeChange == HIGH){
     
-    /***
+    /*
     When the Mode changing button is
     pressed, the mode index increments to
     change to the next mode
-    ***/
+    */
     
-    if (modeIndex > 2){
+    if (modeIndex > 1){
       modeIndex = 0;
     }else{
-      modeIndex = modeIndex + 1;
-      delay(500);
+      modeIndex++;
+      delay(250);
     }
     
   }
@@ -60,35 +79,10 @@ void loop(){
     //Flades LED in and out
     fadePurple();
     
-  }else if(mode == "colorCycle"){
+  }else if(mode == "colorFade"){
+
+    colorFade();
     
-    //Initializes at Red
-    rgbFade[0] = 255;
-    rgbFade[1] = 0;
-    rgbFade[2] = 0;
-    
-    for(int colorOut = 0; colorOut < 3; colorOut += 1){
-      /***
-      Color in is equal to colorOut + 1 if colorOut
-      does not equal 2, otherwise, it is equal to 0
-      ***/
-      int colorIn = colorOut == 2 ? 0 : colorOut + 1;
-      
-      //Increment colorIn PWM value, and decrement colorOut value
-      for(int i = 0; i < 255; i += 1){
-        
-        rgbFade[colorOut] -= 1;
-        rgbFade[colorIn] += 1;
-        
-        //Write RGB values
-        analogWrite(redPin, rgbFade[0]);
-        analogWrite(greenPin, rgbFade[1]);
-        analogWrite(bluePin, rgbFade[2]);
-        
-        delay(5);
-      
-      }
-    }
   }
   
   if(NXTsignal == HIGH){
@@ -102,16 +96,9 @@ void loop(){
   
   }
   
-  Serial.print("Button is ");
-  Serial.print(digitalRead(3));
-  Serial.print("\t");
-  
-  Serial.print("Mode is ");
-  Serial.print(mode);
-  Serial.print("\t");
-  
-  Serial.print("Mode Index is ");
-  Serial.println(modeIndex);
+  loopTime = millis() - lap;  
+  printStats();
+
 }  
   
 
@@ -163,4 +150,55 @@ void fadePurple(){
  
   delay(60); 
 
+}
+
+void colorFade(){
+
+  if(colorOut < 3){
+  
+    int colorIn = colorOut == 2 ? 0 : colorOut + 1;
+  
+    if(i < 255){
+      rgbFade[colorOut]--;
+      rgbFade[colorIn]++;
+    
+      //Write RGB values
+      analogWrite(redPin, rgbFade[0]);
+      analogWrite(greenPin, rgbFade[1]);
+      analogWrite(bluePin, rgbFade[2]);
+   
+      delay(5);
+
+      i++;      
+
+    }else{
+      i = 0;
+      colorOut++; 
+    }
+  
+  }else{
+    colorOut = 0;
+  }
+}
+
+void printStats(){
+  
+  //Prints statistics for troubleshooting
+  Serial.print("Button is ");
+  Serial.print(digitalRead(3));
+  Serial.print("\t");
+  
+  Serial.print("Mode is ");
+  Serial.print(mode);
+  Serial.print("\t");
+  
+  Serial.print("Mode Index is ");
+  Serial.print(modeIndex);
+  Serial.print("\t");
+  Serial.print("\t");
+  
+  Serial.print("Loop took ");
+  Serial.print(loopTime);
+  Serial.println(" milliseconds to run");
+  
 }
