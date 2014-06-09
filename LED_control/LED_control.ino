@@ -1,23 +1,34 @@
+//initializes all variables for later loops
 int blinkSpeed = 3000;
 int fadeAmount = 5;
 int fadeBrightness = 0;
 char* modeList[] = {"solid","fade","colorCycle"};
 int modeIndex = 0;
+int rgbFade[3];
+
+//Initializes pin numbers
+int redPin = 9;
+int greenPin = 10;
+int bluePin = 11;
 
 void setup(){
   
   Serial.begin(9600);
-  pinMode(2,INPUT); //Signal from NXT
-  pinMode(3,INPUT); //Breathe
-  pinMode(9,OUTPUT); //Red
-  pinMode(10,OUTPUT); //Green
-  pinMode(11,OUTPUT); //Blue
   
-  Serial.println("Hello World");
+  pinMode(2,INPUT); //Signal from NXT
+  pinMode(3,INPUT); //Mode Change
+  
+  pinMode(redPin,OUTPUT); //Red
+  pinMode(greenPin,OUTPUT); //Green
+  pinMode(bluePin,OUTPUT); //Blue
+  
+  Serial.println("The program has started");
+  
 }
 
 void loop(){
-
+  
+  //refreshes all inputs
   int NXTsignal = digitalRead(2);
   int modeChange = digitalRead(3);
   String mode = modeList[modeIndex];
@@ -25,45 +36,59 @@ void loop(){
   if(modeChange == HIGH){
     
     /***
-    *When the Mode changing button is
-    *pressed, the mode index increments to
-    *change to the next mode
+    When the Mode changing button is
+    pressed, the mode index increments to
+    change to the next mode
     ***/
-    if (modeIndex > 4){
+    
+    if (modeIndex > 2){
       modeIndex = 0;
     }else{
-      modeIndex = modeIndex++;
-      delay(250);
+      modeIndex = modeIndex + 1;
+      delay(500);
     }
+    
   }
   
   if(mode == "solid"){
     
     //LEDs remain a constant color
     purple();
-    Serial.print("Mode is ");
-    Serial.println(mode);
     
   }else if(mode == "fade"){
     
     //Flades LED in and out
     fadePurple();
-    Serial.print("Mode is ");
-    Serial.println(mode);
     
   }else if(mode == "colorCycle"){
     
-    //Changes LED color every 2 seconds
-    red();
-    delay(2000);
-    blue();
-    delay(2000);
-    green();
-    delay(2000);
+    //Initializes at Red
+    rgbFade[0] = 255;
+    rgbFade[1] = 0;
+    rgbFade[2] = 0;
     
-    Serial.print("Mode is ");
-    Serial.println(mode);
-    
+    for(int colorOut = 0; colorOut < 3; colorOut += 1){
+      /***
+      Color in is equal to colorOut + 1 if colorOut
+      does not equal 2, otherwise, it is equal to 0
+      ***/
+      int colorIn = colorOut == 2 ? 0 : colorOut + 1;
+      
+      //Increment colorIn PWM value, and decrement colorOut value
+      for(int i = 0; i < 255; i += 1){
+        
+        rgbFade[colorOut] -= 1;
+        rgbFade[colorIn] += 1;
+        
+        //Write RGB values
+        analogWrite(redPin, rgbFade[0]);
+        analogWrite(greenPin, rgbFade[1]);
+        analogWrite(bluePin, rgbFade[2]);
+        
+        delay(5);
+      
+      }
+    }
   }
   
   if(NXTsignal == HIGH){
@@ -76,47 +101,58 @@ void loop(){
     blinkSpeed = blinkSpeed * .8; //Shortens then next blink
   
   }
+  
+  Serial.print("Button is ");
+  Serial.print(digitalRead(3));
+  Serial.print("\t");
+  
+  Serial.print("Mode is ");
+  Serial.print(mode);
+  Serial.print("\t");
+  
+  Serial.print("Mode Index is ");
+  Serial.println(modeIndex);
 }  
   
 
 
 //LED Preset
 void off(){
-  digitalWrite(9,LOW); //LEDs are purple
-  digitalWrite(10,LOW);
-  digitalWrite(11,LOW);
+  digitalWrite(redPin,LOW); //LEDs are purple
+  digitalWrite(greenPin,LOW);
+  digitalWrite(bluePin,LOW);
 }
 
 void purple(){
-  digitalWrite(9,HIGH); //LEDs are purple
-  digitalWrite(10,LOW);
-  digitalWrite(11,HIGH);
+  digitalWrite(redPin,HIGH); //LEDs are purple
+  digitalWrite(greenPin,LOW);
+  digitalWrite(bluePin,HIGH);
 }
 
 void red(){
-  digitalWrite(9,HIGH); //LEDs are Red
-  digitalWrite(10,LOW);
-  digitalWrite(11,LOW);
+  digitalWrite(redPin,HIGH); //LEDs are Red
+  digitalWrite(greenPin,LOW);
+  digitalWrite(bluePin,LOW);
 }
 
 void blue(){
-  digitalWrite(9,LOW); //LEDs are Blue
-  digitalWrite(10,LOW);
-  digitalWrite(11,HIGH);
+  digitalWrite(redPin,LOW); //LEDs are Blue
+  digitalWrite(greenPin,LOW);
+  digitalWrite(bluePin,HIGH);
 }
 
 void green(){
 
-  digitalWrite(9,LOW); //LEDs are Green
-  digitalWrite(10,HIGH);
-  digitalWrite(11,LOW);
+  digitalWrite(redPin,LOW); //LEDs are Green
+  digitalWrite(greenPin,HIGH);
+  digitalWrite(bluePin,LOW);
 
 }
 
 void fadePurple(){
 
-  analogWrite(9, fadeBrightness);    
-  analogWrite(11, fadeBrightness);  
+  analogWrite(redPin, fadeBrightness);    
+  analogWrite(bluePin, fadeBrightness);  
   // change the brightness for next time
   fadeBrightness = fadeBrightness + fadeAmount;
 
