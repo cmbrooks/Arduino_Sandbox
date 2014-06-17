@@ -25,6 +25,7 @@ int loopTime;
 int lap;
 
 
+/*Begin Program Here*/
 void setup(){
   
   Serial.begin(9600);
@@ -146,7 +147,7 @@ void fadePurple(){
 
   // reverse the direction of the fading 
   if (fadeBrightness == 0 || fadeBrightness == 255) {
-    fadeAmount = -fadeAmount ; 
+    fadeAmount = -fadeAmount; 
   }     
  
   delay(60); 
