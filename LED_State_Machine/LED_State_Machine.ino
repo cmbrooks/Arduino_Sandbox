@@ -1,6 +1,7 @@
 //State setup
 int nextState;
 int currState;
+int byebye;
 
 //Button Setup
 int NXTSignal;
@@ -35,8 +36,7 @@ int fadeAmount = 5;
 int fadeBrightness = 0;
 
 //Setup enum
-enum cases
-{
+enum cases{
   solid,
   fade,
   colorFade,
@@ -44,10 +44,9 @@ enum cases
   idle,
   updateMode,
   updateLEDs,
-  leave
+  endGame,
+  exit
 };
-
-int byebye;
 
 
 /*Begin Program*/
@@ -67,10 +66,10 @@ void setup(){
 
 void loop(){
   
-  while(byebye == 0){
+  while(currState != exit){
     
     modeChange = digitalRead(2);
-    off = digitalRead(3);
+    NXTSignal = digitalRead(3);
     mode = modeList[modeIndex];
     
     switch(currState){
@@ -84,8 +83,8 @@ void loop(){
       case idle://Idle
         if(modeChange == HIGH){
           nextState = updateMode; //Update Mode
-        }else if(off == HIGH){
-          nextState = leave;
+        }else if(NXTSignal == HIGH){
+          nextState = endMode;
         }else{
           nextState = currMode;
         }
@@ -114,7 +113,21 @@ void loop(){
         Serial.println("Current Case: Update LEDs");
         break;
       
-      case leave:
+      case endMode:
+        //Blinks the LEDs at an increacing pace
+        analogWrite(redPin,255);
+        analogWrite(greenPin,255);
+        analogWrite(bluePin,255);
+        delay(blinkSpeed);
+        
+        analogWrite(redPin,0);
+        analogWrite(greenPin,0);
+        analogWrite(bluePin,0);
+        delay(blinkSpeed);
+        
+        blinkSpeed = blinkSpeed * .8; //Shortens then next blink
+      
+      case exit:
         byebye = 1;
         Serial.println("LEDs are now turned off");
         delay(500);        
