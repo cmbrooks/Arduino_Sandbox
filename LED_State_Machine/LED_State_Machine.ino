@@ -6,6 +6,7 @@ int byebye;
 //Button Setup
 int NXTSignal;
 int modeChange;
+int upsideDown;
 int off;
 
 //Variables for Mode changing
@@ -45,7 +46,8 @@ enum cases{
   updateMode,
   updateLEDs,
   endGame,
-  exit
+  uhOh,
+  leave
 };
 
 
@@ -66,10 +68,11 @@ void setup(){
 
 void loop(){
   
-  while(currState != exit){
+  while(currState != leave){
     
     modeChange = digitalRead(2);
     NXTSignal = digitalRead(3);
+    upsideDown = digitalRead(7);
     mode = modeList[modeIndex];
     
     switch(currState){
@@ -84,7 +87,9 @@ void loop(){
         if(modeChange == HIGH){
           nextState = updateMode; //Update Mode
         }else if(NXTSignal == HIGH){
-          nextState = endMode;
+          nextState = endGame;
+        }else if(upsideDown == LOW){
+          nextState = uhOh;
         }else{
           nextState = currMode;
         }
@@ -113,24 +118,40 @@ void loop(){
         Serial.println("Current Case: Update LEDs");
         break;
       
-      case endMode:
-        //Blinks the LEDs at an increacing pace
-        analogWrite(redPin,255);
-        analogWrite(greenPin,255);
-        analogWrite(bluePin,255);
-        delay(blinkSpeed);
-        
-        analogWrite(redPin,0);
-        analogWrite(greenPin,0);
-        analogWrite(bluePin,0);
-        delay(blinkSpeed);
-        
-        blinkSpeed = blinkSpeed * .8; //Shortens then next blink
+      case endGame:
+//        //Blinks the LEDs at an increacing pace
+//        analogWrite(redPin,255);
+//        analogWrite(greenPin,255);
+//        analogWrite(bluePin,255);
+//        delay(blinkSpeed);
+//        
+//        analogWrite(redPin,0);
+//        analogWrite(greenPin,0);
+//        analogWrite(bluePin,0);
+//        delay(blinkSpeed);
+//        
+//        blinkSpeed = blinkSpeed * .8; //Shortens then next blink
       
-      case exit:
+      case leave:
         byebye = 1;
         Serial.println("LEDs are now turned off");
         delay(500);        
+        break;
+        
+      case uhOh:
+        if (redVal == 0){
+          redVal = 255;
+          greenVal = 0;
+          blueVal = 0;
+        }else{
+          redVal = 0;
+          greenVal = 0;
+          blueVal = 0;
+        }
+        
+        Serial.println("Current Case: uhOh");
+        delay(250);
+        nextState = updateLEDs;
         break;
       
       case solid: //Mode: Solid purple
