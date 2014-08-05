@@ -119,18 +119,25 @@ void loop(){
         break;
       
       case endGame:
-//        //Blinks the LEDs at an increacing pace
-//        analogWrite(redPin,255);
-//        analogWrite(greenPin,255);
-//        analogWrite(bluePin,255);
-//        delay(blinkSpeed);
-//        
-//        analogWrite(redPin,0);
-//        analogWrite(greenPin,0);
-//        analogWrite(bluePin,0);
-//        delay(blinkSpeed);
-//        
-//        blinkSpeed = blinkSpeed * .8; //Shortens then next blink
+        if (blinkSpeed > 2){
+          //Blinks the LEDs at an increacing pace
+          analogWrite(redPin,255);
+          analogWrite(greenPin,255);
+          analogWrite(bluePin,255);
+          delay(blinkSpeed);
+          
+          analogWrite(redPin,0);
+          analogWrite(greenPin,0);
+          analogWrite(bluePin,0);
+          delay(blinkSpeed);
+          
+          blinkSpeed = blinkSpeed * .7; //Shortens then next blink
+          Serial.print(blinkSpeed);
+        }else{
+          analogWrite(redPin,255);
+          analogWrite(greenPin,0);
+          analogWrite(bluePin,0);
+        }
       
       case leave:
         byebye = 1;
@@ -150,7 +157,7 @@ void loop(){
         }
         
         Serial.println("Current Case: uhOh");
-        delay(250);
+        delay(100);
         nextState = updateLEDs;
         break;
       
