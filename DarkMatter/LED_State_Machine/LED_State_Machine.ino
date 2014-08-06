@@ -36,6 +36,10 @@ int blinkSpeed = 3000;
 int fadeAmount = 5;
 int fadeBrightness = 0;
 
+//Variables for uhOh mode
+int SOS = true;
+int iteration = 0;
+
 //Setup enum
 enum cases{
   solid,
@@ -146,18 +150,57 @@ void loop(){
         break;
         
       case uhOh:
-        if (redVal == 0){
-          redVal = 255;
-          greenVal = 0;
-          blueVal = 0;
+        if (SOS == false){
+          if (redVal == 0){
+            redVal = 255;
+            greenVal = 0;
+            blueVal = 0;
+          }else{
+            redVal = 0;
+            greenVal = 0;
+            blueVal = 0;
+          }
+          delay(100);
         }else{
-          redVal = 0;
-          greenVal = 0;
-          blueVal = 0;
+          while (iteration < 3){
+            digitalWrite(redPin,HIGH);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(100);
+            
+            digitalWrite(redPin,LOW);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(100);
+            
+            Serial.print(iteration);
+            Serial.println("Dot");
+            iteration++;
+          }
+          iteration = 0;
+          while (iteration < 3){
+            digitalWrite(redPin,HIGH);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(300);
+            
+            digitalWrite(redPin,LOW);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(300);
+            
+            Serial.print(iteration);
+            Serial.println("Dash");
+            iteration++;
+          }
+          iteration = 0;
         }
         
         Serial.println("Current Case: uhOh");
-        delay(100);
         nextState = updateLEDs;
         break;
       
