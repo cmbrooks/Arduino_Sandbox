@@ -198,10 +198,31 @@ void loop(){
             iteration++;
           }
           iteration = 0;
+          while (iteration < 3){
+            digitalWrite(redPin,HIGH);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(100);
+            
+            digitalWrite(redPin,LOW);
+            digitalWrite(greenPin,LOW);
+            digitalWrite(bluePin,LOW);
+            
+            delay(100);
+            
+            Serial.print(iteration);
+            Serial.println("Dot");
+            iteration++;
+          }
+          iteration = 0;
+          delay(500);
         }
-        
+        if (digitalRead(7) == HIGH){
+          nextState = updateLEDs;
+        }
         Serial.println("Current Case: uhOh");
-        nextState = updateLEDs;
+        Serial.println(digitalRead(7));
         break;
       
       case solid: //Mode: Solid purple
