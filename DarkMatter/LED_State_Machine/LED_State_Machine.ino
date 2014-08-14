@@ -10,7 +10,7 @@ int upsideDown;
 int off;
 
 //Variables for Mode changing
-String modeList[] = {"solid","fade","colorFade"};
+String modeList[] = {"solid","fade","colorFade","colorFlash"};
 String mode;
 int modeIndex = 0;
 int currMode;
@@ -45,6 +45,7 @@ enum cases{
   solid,
   fade,
   colorFade,
+  colorFlash,
   initialize,
   idle,
   updateMode,
@@ -101,7 +102,7 @@ void loop(){
         break;
         
       case updateMode:
-        if (modeIndex == 2){
+        if (modeIndex == 3){
           modeIndex = 0;
         }else{
           modeIndex++;
@@ -286,6 +287,50 @@ void loop(){
         currMode = colorFade;
         Serial.println("Current Case: Mode: Color Fade");
         break;
+        
+    case colorFlash:
+
+      digitalWrite(redPin,HIGH);
+      digitalWrite(greenPin,LOW);
+      digitalWrite(bluePin,LOW);
+      
+      delay(1000);
+      
+      digitalWrite(redPin,HIGH);
+      digitalWrite(greenPin,HIGH);
+      digitalWrite(bluePin,LOW);
+      
+      delay(1000);
+      
+      digitalWrite(redPin,LOW);
+      digitalWrite(greenPin,HIGH);
+      digitalWrite(bluePin,LOW);
+      
+      delay(1000);
+      
+      digitalWrite(redPin,LOW);
+      digitalWrite(greenPin,HIGH);
+      digitalWrite(bluePin,HIGH);
+      
+      delay(1000);
+      
+      digitalWrite(redPin,LOW);
+      digitalWrite(greenPin,LOW);
+      digitalWrite(bluePin,HIGH);
+      
+      delay(1000);
+      
+      digitalWrite(redPin,HIGH);
+      digitalWrite(greenPin,LOW);
+      digitalWrite(bluePin,HIGH);
+      
+      delay(1000);
+      
+      nextState = idle;
+      currMode = colorFlash;
+      Serial.println("Current Case: Mode: Color Flash");
+      break;
+    
     }
     
     currState = nextState;
