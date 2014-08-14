@@ -29,6 +29,20 @@ int rgbFade[3];
 int colorOut = 0;
 int i = 0;
 
+//Variables for Color Flash mode
+int lastTime;
+int currTime;
+int elapsedTime;
+int colorVals[][3] = {
+  {255,0,0}, //Red
+  {255,255,0}, //Yellow
+  {0,255,0}, //Green
+  {0,255,255}, //Blue-Green
+  {0,0,255}, //Blue
+  {255,0,255} //Purple
+};
+int colorIndex = 0;
+
 //Variables for End Game mode
 int blinkSpeed = 3000;
 
@@ -290,43 +304,25 @@ void loop(){
         
     case colorFlash:
 
-      digitalWrite(redPin,HIGH);
-      digitalWrite(greenPin,LOW);
-      digitalWrite(bluePin,LOW);
+      currTime = millis();
+      elapsedTime = currTime - lastTime;
       
-      delay(1000);
+      if (elapsedTime < 1000){
+        //Continue current color
+        redVal = colorVals[colorIndex][0];
+        greenVal = colorVals[colorIndex][1];
+        blueVal = colorVals[colorIndex][2];
+      }else{
+        lastTime = millis();
+        //Change to next color
+        if (colorIndex != 5){
+          colorIndex++;
+        }else{
+          colorIndex = 0;
+        }
+      }
       
-      digitalWrite(redPin,HIGH);
-      digitalWrite(greenPin,HIGH);
-      digitalWrite(bluePin,LOW);
-      
-      delay(1000);
-      
-      digitalWrite(redPin,LOW);
-      digitalWrite(greenPin,HIGH);
-      digitalWrite(bluePin,LOW);
-      
-      delay(1000);
-      
-      digitalWrite(redPin,LOW);
-      digitalWrite(greenPin,HIGH);
-      digitalWrite(bluePin,HIGH);
-      
-      delay(1000);
-      
-      digitalWrite(redPin,LOW);
-      digitalWrite(greenPin,LOW);
-      digitalWrite(bluePin,HIGH);
-      
-      delay(1000);
-      
-      digitalWrite(redPin,HIGH);
-      digitalWrite(greenPin,LOW);
-      digitalWrite(bluePin,HIGH);
-      
-      delay(1000);
-      
-      nextState = idle;
+      nextState = updateLEDs;
       currMode = colorFlash;
       Serial.println("Current Case: Mode: Color Flash");
       break;
