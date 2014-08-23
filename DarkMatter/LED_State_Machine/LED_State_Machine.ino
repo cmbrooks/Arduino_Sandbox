@@ -89,9 +89,9 @@ void loop(){
   
   while(currState != leave){
     
-    modeChange = digitalRead(2);
-    NXTSignal = digitalRead(3);
-    upsideDown = digitalRead(7);
+    modeChange = digitalRead(52);
+    NXTSignal = digitalRead(53);
+    upsideDown = digitalRead(54);
     mode = modeList[modeIndex];
     
     switch(currState){
