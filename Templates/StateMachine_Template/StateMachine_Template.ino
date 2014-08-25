@@ -36,6 +36,14 @@ void loop(){
         nextState = idle;
       }   
     
+    case case1:
+      //Code for case1 here
+      break;
+    
+    case case2:
+      //Code for case2 here
+      break;
+      
   }
   
   currState = nextState;
