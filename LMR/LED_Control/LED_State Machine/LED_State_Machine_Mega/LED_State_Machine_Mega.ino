@@ -78,6 +78,9 @@ void setup(){
   pinMode(redPin,OUTPUT);
   pinMode(greenPin,OUTPUT);
   pinMode(bluePin,OUTPUT);
+  pinMode(52,INPUT);
+  pinMode(53,INPUT);
+  pinMode(54,INPUT);
   
   currState = initialize;
   

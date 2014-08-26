@@ -78,6 +78,9 @@ void setup(){
   pinMode(redPin,OUTPUT);
   pinMode(greenPin,OUTPUT);
   pinMode(bluePin,OUTPUT);
+  pinMode(52,INPUT);
+  pinMode(3,INPUT);
+  pinMode(7,INPUT);
   
   currState = initialize;
   
@@ -89,9 +92,9 @@ void loop(){
   
   while(currState != leave){
     
-    modeChange = digitalRead(52);
-    NXTSignal = digitalRead(53);
-    upsideDown = digitalRead(54);
+    modeChange = digitalRead(2);
+    NXTSignal = digitalRead(3);
+    upsideDown = digitalRead(7);
     mode = modeList[modeIndex];
     
     switch(currState){
