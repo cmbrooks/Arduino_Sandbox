@@ -94,7 +94,7 @@ void loop(){
     
     modeChange = digitalRead(52);
     NXTSignal = digitalRead(53);
-    upsideDown = digitalRead(54);
+    upsideDown = digitalRead(50);
     mode = modeList[modeIndex];
     
     switch(currState){
@@ -110,8 +110,8 @@ void loop(){
           nextState = updateMode; //Update Mode
         }else if(NXTSignal == HIGH){
           nextState = endGame;
-        }else if(upsideDown == LOW){
-          nextState = uhOh;
+//        }else if(upsideDown == LOW){
+//          nextState = uhOh;
         }else{
           nextState = currMode;
         }
