@@ -1,6 +1,5 @@
 /*Setup Variables here*/
-int que[10];
-int writeQue = 1;
+String queue = "";
 
 /*Fill enum with all case names*/
 enum cases{
@@ -14,46 +13,40 @@ enum cases{
 /*Begin Program*/
 void setup(){
   Serial.begin(9600);
-  que[0] = init;
-  writeQue++;
+  queue = "init*";
 }
 
 void loop(){
   
-  switch(que[currQue]){
+  switch(queue.substring(0, queue.indexOf("*"))){
     
     case init:
       /*Prepare program here*/
-      nextState = idle;
+      queue += "idle*";
       break;
     
     case idle:
       if (input1){
-        que[writeQue] = case1;
-        writeQue++;
+        queue += "idle*";
       }else if (input2){
-        que[writeQue] = case2;
-        writeQue++;
+        queue += "idle*";
       }else{
-        que[writeQue] = idle;
-        writeQue++;
+        queue += "idle*";
       }   
     
     case case1:
       //Code for case1 here
-      que[writeQue] = idle;
-      writeQue++;
+      queue += "idle*";
       break;
     
     case case2:
       //Code for case2 here
-      que[writeQue] = idle;
-      writeQue++;
+      queue += "idle*";
       break;
       
+      /*Remove the residual astrics*/
+     queue = queue.substring(1, queue.length);
+      
   }
-  
-  for(int x = 1; x < 10; x++){
-    que[x-1] = que[x];
 
 }
